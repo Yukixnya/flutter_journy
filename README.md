@@ -1,1 +1,1 @@
-flutter_journ
+flutter_journy
