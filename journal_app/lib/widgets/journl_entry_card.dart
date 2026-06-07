@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:journal_app/data/data.dart';
 import 'package:journal_app/data/journal_entry_model.dart';
 
 class JournalEntryCard extends StatelessWidget{

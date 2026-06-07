@@ -19,3 +19,16 @@
 ### Ensure data persists during app runtime (in-memory is acceptable unless specified).
 
 ### Apps should handle empty states gracefully.
+
+## Screenshots
+- main landing interface (2 saved entries)
+![](Screenshots/Screenshot_1.png)
+
+- Bottom Sheet
+![](Screenshots/Screenshot_2.png)
+
+- Text Fields
+![](Screenshots/Screenshot_3.png)
+
+- Updated HomePage
+![](Screenshots/Screenshot_4.png)
