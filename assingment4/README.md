@@ -8,4 +8,4 @@ flutter create assingment3
 - change home screen widget
 
 ## Screenshorts
-![](Images/Screenshot.png)
+![](Screenshots/Screenshot.png)
