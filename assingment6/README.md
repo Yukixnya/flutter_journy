@@ -15,3 +15,16 @@
 - Item tap handling
 
 ### Apply proper spacing, alignment, and theming.
+
+## Screenshots
+### Interface
+- Unscrolled
+![](Screenshots/Screenshot_3.png)
+
+- Scrolled Down
+![](Screenshots/Screenshot_3.png)
+
+### Button Working
+- App Liked By Counter increases 
+![](Screenshots/Screenshot_3.png)
+![](Screenshots/Screenshot_1.png)

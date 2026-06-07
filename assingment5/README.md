@@ -18,3 +18,6 @@
 - Font size and weight
 
 ### Ensure the Ul adapts correctly to different screen sizes.
+
+## Screenshots
+![](Screenshots/Screenshot.png)
