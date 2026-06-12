@@ -1,22 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_app/models/item_model.dart';
+import 'package:recipe_app/providers/saved_provider.dart';
 
-class ItemDetailsPage extends StatelessWidget {
-  final ItemModel items;
+class ItemDetailsPage extends ConsumerWidget {
+  final ItemModel item;
 
-  const ItemDetailsPage({required this.items, super.key});
+  const ItemDetailsPage({required this.item, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final String contains = items.isGlutenFree
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<ItemModel> isItemSaved = ref.watch(savedItemProvider);
+
+    final isSaved = isItemSaved.contains(item);
+
+    final String contains = item.isGlutenFree
         ? "This contains Gluten."
         : "This is Gluten Free food.";
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          items.name,
+          item.name,
           style: TextStyle(color: Colors.white, fontSize: 30),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ref.read(savedItemProvider.notifier).toggleItemsaved(item);
+            },
+            icon: Icon(
+              isSaved ? (Icons.bookmark_add) : (Icons.bookmark_add_outlined),
+              color: isSaved ? Colors.red : Colors.white,
+              size: 30,
+            ),
+          ),
+        ],
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
@@ -26,7 +44,7 @@ class ItemDetailsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.network(
-                items.img,
+                item.img,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: 250,
@@ -34,28 +52,36 @@ class ItemDetailsPage extends StatelessWidget {
               SizedBox(height: 15),
               Text(
                 "Ingridents:",
-                style: TextStyle(color: Colors.pink[400], fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.pink[400],
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: items.ingridents.map((ingredient) {
+                children: item.ingridents.map((ingredient) {
                   return Text(
                     "• $ingredient",
-                    style: const TextStyle(color: Colors.white,fontSize: 15),
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
                   );
                 }).toList(),
               ),
               SizedBox(height: 15),
               Text(
                 "Steps:",
-                style: TextStyle(color: Colors.pink[400], fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.pink[400],
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: items.steps.map((step) {
+                children: item.steps.map((step) {
                   return Text(
                     "• $step\n",
-                    style: const TextStyle(color: Colors.white,fontSize: 15),
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
                   );
                 }).toList(),
               ),
@@ -66,7 +92,7 @@ class ItemDetailsPage extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 20,
                   fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: 50),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_app/app.dart';
 
 void main(){
-  runApp(const RecipeApp());
+  runApp(const ProviderScope(child: RecipeApp()));
 }

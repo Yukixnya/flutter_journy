@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:recipe_app/screens/category_page.dart';
+import 'package:recipe_app/screens/main_page.dart';
 
 class RecipeApp extends StatelessWidget{
   const RecipeApp({super.key});
@@ -13,7 +13,7 @@ class RecipeApp extends StatelessWidget{
         textTheme: GoogleFonts.latoTextTheme(),
         scaffoldBackgroundColor: Colors.black,
       ),
-      home: CategoryPage(),
+      home: MainPage(),
     );
   }
 }
