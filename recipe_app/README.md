@@ -1,14 +1,33 @@
 # recipe_app
+<br>
+</br> 
 
-## Create a Flutter application that provides help or instructions to users.
-- The app should include:
-- Multiple help/instruction screens or
-- A list of topics with detailed instructions
+# Task 1
+- ## Create a Flutter application that provides help or instructions to users.
+    - The app should include:
+    - Multiple help/instruction screens or
+    - A list of topics with detailed instructions
 
-## Use widgets such as:
-- ListView
-- ExpansionTile or
-- Navigator for screen navigation
+- ## Use widgets such as:
+    - ListView
+    - ExpansionTile or
+    - Navigator for screen navigation
+
+<br>
+</br> 
+
+# Task 2
+- ## Create a creative Flutter application of your choice
+    - example: notes app, counter variants, mini tracker, etc.
+- ## Use state management to manage app data 
+    - for example: Provider or any equivalent approach.
+
+- ## The app should include:
+    - At least one screen with dynamic data
+    - User interaction that updates Ul using state management
+
+<br>
+</br> 
 
 ### Display clear and readable instructional text.
 
@@ -16,7 +35,12 @@
 
 ### The app should run without crashes or Ul overflow issues.
 
-## Screenshots
+### Ensure the app runs smoothly without runtime errors.
+
+<br>
+</br> 
+
+## Screenshots (Task1 and Task2)
 
 ### all the pages are scrollable
 
