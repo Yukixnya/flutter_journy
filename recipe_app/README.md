@@ -36,3 +36,19 @@
 - gluten free indicator
 ![](Screenshots/Screenshot_6.png)
 ![](Screenshots/Screenshot_7.png)
+
+### State Management (Saved Items)
+
+- Bottom Navigation Bar
+![](Screenshots/Screenshot_8.png)
+
+- Saved Button with State Management
+![](Screenshots/Screenshot_9.png)
+![](Screenshots/Screenshot_10.png)
+
+- ScaffoldMessenger and SnackBar 
+    - with SnackBarBehavior as floating
+    - with Duration to 200 Miliseconds
+
+![](Screenshots/Screenshot_11.png)
+![](Screenshots/Screenshot_12.png)

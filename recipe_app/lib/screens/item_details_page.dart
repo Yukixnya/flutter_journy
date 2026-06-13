@@ -26,7 +26,24 @@ class ItemDetailsPage extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              ref.read(savedItemProvider.notifier).toggleItemsaved(item);
+              bool wasSaved = ref
+                  .read(savedItemProvider.notifier)
+                  .toggleItemsaved(item);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    wasSaved
+                        ? "Item Saved to SavedList!"
+                        : "Item Removed from SavedList!",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  elevation: 2,
+                  backgroundColor: wasSaved? Colors.green:Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                  duration: Duration(milliseconds: 200),
+                ),
+              );
             },
             icon: Icon(
               isSaved ? (Icons.bookmark_add) : (Icons.bookmark_add_outlined),
