@@ -71,7 +71,7 @@ final List<Workout> sampleWorkouts = [
 final List<Goal> sampleGoals = [
   Goal(
     name: 'Steps',
-    currentValue: 6500,
+    currentValue: 4500,
     targetValue: 10000,
     unit: 'steps',
   ),
@@ -83,7 +83,7 @@ final List<Goal> sampleGoals = [
   ),
   Goal(
     name: 'Water',
-    currentValue: 5,
+    currentValue: 7,
     targetValue: 8,
     unit: 'glasses',
   ),
