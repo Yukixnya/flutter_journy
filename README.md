@@ -16,6 +16,7 @@
 | `journal_app/` | Journal entry app with saved entries. |
 | `quote_gen_app/` | Quote generator app. |
 | `recipe_app/` | Recipe/help instruction app with saved items and scrollable screens. |
+|`fitness_app/`| Animation filled application using fitness as app as theme|
 
 ## How To Run An App
 
