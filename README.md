@@ -17,6 +17,7 @@
 | `quote_gen_app/` | Quote generator app. |
 | `recipe_app/` | Recipe/help instruction app with saved items and scrollable screens. |
 |`fitness_app/`| Animation filled application using fitness as app as theme|
+|`assingment12`| Pick Favourite Place image along with title and description , use of shared preference , responsive desing using media query |
 
 ## How To Run An App
 
