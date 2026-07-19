@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:assingment12/providers/fav_provider.dart';
 import 'package:assingment12/screens/add_fav_screen.dart';
 import 'package:assingment12/screens/fav_place_detail_screen.dart';
@@ -63,44 +66,112 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
       body: favPlaces.isEmpty
           ? Center(child: const Text("No Favourite Places Added Yet!"))
-          : ListView.builder(
-              itemCount: favPlaces.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            FavPlaceDetailScreen(place: favPlaces[index]),
-                      ),
-                    );
-                  },
-                  child: Card(
-                    margin: const EdgeInsets.all(10),
-                    child: ListTile(
-                      leading: Image.file(
-                        favPlaces[index].image,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                      title: Text(favPlaces[index].name),
-                      subtitle: Text(
-                        favPlaces[index].desc.length > 24
-                            ? "${favPlaces[index].desc.substring(0, 24)}..."
-                            : favPlaces[index].desc,
-                      ),
-                      trailing: IconButton(
-                        onPressed: () {
-                          ref
-                              .read(favProvider.notifier)
-                              .removeFav(favPlaces[index]);
-                        },
-                        icon: Icon(Icons.delete),
-                      ),
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth > 600) {
+                  // Tablet / Large Screen layout
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(10),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 3 / 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
                     ),
-                  ),
-                );
+                    itemCount: favPlaces.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  FavPlaceDetailScreen(place: favPlaces[index]),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          child: GridTile(
+                            footer: GridTileBar(
+                              backgroundColor: Colors.black54,
+                              title: Text(favPlaces[index].name),
+                              subtitle: Text(
+                                favPlaces[index].desc.length > 24
+                                    ? "${favPlaces[index].desc.substring(0, 24)}..."
+                                    : favPlaces[index].desc,
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  ref
+                                      .read(favProvider.notifier)
+                                      .removeFav(favPlaces[index]);
+                                },
+                                icon: const Icon(Icons.delete, color: Colors.white),
+                              ),
+                            ),
+                            child: kIsWeb
+                                ? Image.network(
+                                    favPlaces[index].imagePath,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.file(
+                                    File(favPlaces[index].imagePath),
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  // Mobile layout
+                  return ListView.builder(
+                    itemCount: favPlaces.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  FavPlaceDetailScreen(place: favPlaces[index]),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.all(10),
+                          child: ListTile(
+                            leading: kIsWeb
+                                ? Image.network(
+                                    favPlaces[index].imagePath,
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.file(
+                                    File(favPlaces[index].imagePath),
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                            title: Text(favPlaces[index].name),
+                            subtitle: Text(
+                              favPlaces[index].desc.length > 24
+                                  ? "${favPlaces[index].desc.substring(0, 24)}..."
+                                  : favPlaces[index].desc,
+                            ),
+                            trailing: IconButton(
+                              onPressed: () {
+                                ref
+                                    .read(favProvider.notifier)
+                                    .removeFav(favPlaces[index]);
+                              },
+                              icon: const Icon(Icons.delete),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
               },
             ),
       floatingActionButton: FloatingActionButton(
@@ -108,7 +179,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           context,
         ).push(MaterialPageRoute(builder: (context) => const AddFavScreen())),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

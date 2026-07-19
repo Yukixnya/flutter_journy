@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:assingment12/models/fav_model.dart';
 import 'package:assingment12/providers/fav_provider.dart';
@@ -21,7 +22,7 @@ class _AddFavScreenState extends ConsumerState<AddFavScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final ImagePicker _imagePicker = ImagePicker();
-  File? _imageFile;
+  XFile? _imageFile;
   Future<void> _pickImage() async {
     XFile? imagePicked = await _imagePicker.pickImage(
       source: ImageSource.camera,
@@ -30,7 +31,7 @@ class _AddFavScreenState extends ConsumerState<AddFavScreen> {
     if (imagePicked == null) return;
 
     setState(() {
-      _imageFile = File(imagePicked.path);
+      _imageFile = imagePicked;
     });
   }
 
@@ -55,7 +56,7 @@ class _AddFavScreenState extends ConsumerState<AddFavScreen> {
         .addFav(
           FavModel(
             id: DateTime.now().toString(),
-            image: _imageFile!,
+            imagePath: _imageFile!.path,
             name: _placeNameController.text,
             desc: _placeDescriptionController.text,
           ),
@@ -72,25 +73,14 @@ class _AddFavScreenState extends ConsumerState<AddFavScreen> {
           style: Theme.of(context).textTheme.bodyLarge,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isLargeScreen = constraints.maxWidth > 600;
+          
+          Widget formContent = Form(
+            key: _formKey,
             child: Column(
               children: [
-                // image picker
-                if (_imageFile != null)
-                  Image.file(
-                    _imageFile!,
-                    width: 400,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-
-                const SizedBox(height: 10),
-
-                // form
                 TextFormField(
                   controller: _placeNameController,
                   decoration: const InputDecoration(
@@ -104,9 +94,7 @@ class _AddFavScreenState extends ConsumerState<AddFavScreen> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 15),
-
                 TextFormField(
                   maxLines: null,
                   controller: _placeDescriptionController,
@@ -121,9 +109,7 @@ class _AddFavScreenState extends ConsumerState<AddFavScreen> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 10),
-                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -136,19 +122,79 @@ class _AddFavScreenState extends ConsumerState<AddFavScreen> {
                         ).textTheme.bodyMedium!.copyWith(color: Colors.red),
                       ),
                     ),
-
                     ElevatedButton(
                       onPressed: _pickImage,
                       child: const Text("Click Image"),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(onPressed: _save, child: const Text("Save")),
               ],
             ),
-          ),
-        ),
+          );
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: isLargeScreen
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_imageFile != null)
+                          Expanded(
+                            flex: 1,
+                            child: kIsWeb
+                                ? Image.network(
+                                    _imageFile!.path,
+                                    height: 300,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.file(
+                                    File(_imageFile!.path),
+                                    height: 300,
+                                    fit: BoxFit.cover,
+                                  ),
+                          )
+                        else
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              height: 300,
+                              color: Colors.grey[300],
+                              child: const Center(child: Text("No Image Selected")),
+                            ),
+                          ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          flex: 1,
+                          child: formContent,
+                        ),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        if (_imageFile != null)
+                          kIsWeb
+                              ? Image.network(
+                                  _imageFile!.path,
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.file(
+                                  File(_imageFile!.path),
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
+                        const SizedBox(height: 10),
+                        formContent,
+                      ],
+                    ),
+            ),
+          );
+        },
       ),
     );
   }
