@@ -18,6 +18,7 @@
 | `recipe_app/` | Recipe/help instruction app with saved items and scrollable screens. |
 |`fitness_app/`| Animation filled application using fitness as app as theme|
 |`assingment12`| Pick Favourite Place image along with title and description , use of shared preference , responsive desing using media query |
+|`weather_app`| Weather Search for Cities and Current Location Weather Service using OpenWeather API , responsive app with crossplatform management |
 
 ## How To Run An App
 
