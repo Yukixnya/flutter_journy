@@ -17,3 +17,4 @@ Ensure the app updates Ul dynamically based on API response.
 ```
 
 ## Screenshots
+https://github.com/user-attachments/assets/215dda5a-5418-4045-b0af-3786b1ba9381
