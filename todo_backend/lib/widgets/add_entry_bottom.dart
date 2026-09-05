@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo_backend/data/data.dart';
 import 'package:todo_backend/data/todo_entry_model.dart';
 
 class AddEntryBottom extends StatefulWidget{
@@ -62,7 +61,7 @@ class _AddEntryBottom extends State<AddEntryBottom>{
                 ElevatedButton(
                   onPressed: (){
                     TodoEntryModel entry = TodoEntryModel(
-                      id: todo_list.length + 1, 
+                      id: '',
                       title: _titleEditingController.text, 
                       content: _contentEditingController.text, 
                       date: DateTime.now()

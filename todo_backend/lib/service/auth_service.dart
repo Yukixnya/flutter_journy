@@ -14,17 +14,31 @@ class AuthService {
   Future<UserCredential> signIn(String email, String password) async {
     try {
 
-      bool userExixts = await _checkUserExists(email);
-      if (!userExixts) {
-        throw Exception('User does not exist, Please register first');
-      }
-
-      final UserCredential user_data = await _auth.signInWithEmailAndPassword(
+      final UserCredential userData = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       await _saveUserState(true);
-      return user_data;
+      return userData;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'user-not-found':
+          throw Exception('No user found for that email.');
+        case 'wrong-password':
+          throw Exception('Wrong password provided.');
+        case 'invalid-credential':
+          throw Exception('Invalid email or password.');
+        case 'user-disabled':
+          throw Exception('This user account has been disabled.');
+        case 'invalid-email':
+          throw Exception('The email address is invalid.');
+        case 'too-many-requests':
+          throw Exception('Too many login attempts. Please try again later.');
+        default:
+          throw Exception(e.message ?? 'An unknown authentication error occurred.');
+      }
+    } on FirebaseException catch (e) {
+      throw Exception('Firestore error: ${e.message}');
     } catch (e) {
       throw Exception('Failed to sign in: $e');
     }
@@ -33,17 +47,29 @@ class AuthService {
   Future<UserCredential> signUp(String username, String email, String password) async {
     try {
 
-      bool userExixts = await _checkUserExists(email);
-      if (userExixts) {
-        throw Exception('User already exists, Please login instead');
-      }
-
       final UserCredential userData = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
+      
       await userData.user?.updateDisplayName(username);
-      await _addUserToFirestore(username, email);
+      await _addUserToFirestore(userData.user?.uid ?? '', username, email);
       await _saveUserState(true);
+      
       return userData;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'email-already-in-use':
+          throw Exception('The email address is already in use by another account.');
+        case 'weak-password':
+          throw Exception('The password provided is too weak.');
+        case 'operation-not-allowed':
+          throw Exception('Email/password accounts are not enabled.');
+        case 'invalid-email':
+          throw Exception('The email address is invalid.');
+        default:
+          throw Exception(e.message ?? 'An unknown registration error occurred.');
+      }
+    } on FirebaseException catch (e) {
+      throw Exception('Firestore error: ${e.message}');
     } catch (e) {
       throw Exception('Failed to sign up: $e');
     }
@@ -53,29 +79,53 @@ class AuthService {
     try {
       await _auth.signOut();
       await _saveUserState(false);
+    } on FirebaseAuthException catch (e) {
+      throw Exception('Firebase Auth error during sign out: ${e.message}');
     } catch (e) {
       throw Exception('Failed to sign out: $e');
     }
   }
 
   Future<void> _addUserToFirestore(
+    String uid,
     String username,
     String email,
   ) async {
-    UserModel _user = UserModel(username: username, email: email);
+    UserModel userModel = UserModel(username: username, email: email);
     try {
-      await _firestore.collection('users').add(_user.userModelToMap());
+      if (uid.isNotEmpty) {
+        await _firestore.collection('users').doc(uid).set(userModel.userModelToMap());
+      } else {
+        await _firestore.collection('users').add(userModel.userModelToMap());
+      }
+    } on FirebaseException catch (e) {
+      switch (e.code) {
+        case 'permission-denied':
+          throw Exception('You do not have permission to write to Firestore.');
+        case 'unavailable':
+          throw Exception('Firestore service is currently unavailable.');
+        default:
+          throw Exception('Firestore error adding user: ${e.message}');
+      }
     } catch (e) {
       throw Exception('Failed to add user to Firestore: $e');
     }
   }
 
-  Future<bool> _checkUserExists(String email) async{
-    try{
-      final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore.collection('users').where('email', isEqualTo: email).limit(1).get();
+  Future<bool> _checkUserExists(String email) async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
       return querySnapshot.docs.isNotEmpty;
-    }
-    catch(e){
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        return false; 
+      }
+      throw Exception('Firestore error checking user: ${e.message}');
+    } catch (e) {
       throw Exception('Failed to check user in Firestore: $e');
     }
   }
@@ -90,6 +140,9 @@ class AuthService {
       if (querySnapshot.docs.isNotEmpty) {
         return querySnapshot.docs.first.data()['username'] as String?;
       }
+      return null;
+    } on FirebaseException catch (e) {
+      print('Firestore error fetching username: ${e.message}');
       return null;
     } catch (e) {
       return null;

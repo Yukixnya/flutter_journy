@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_backend/data/data.dart';
+import 'package:todo_backend/providers/entry_service_provider.dart';
 import 'package:todo_backend/widgets/todo_entry_card.dart';
 import 'package:todo_backend/widgets/add_entry_bottom.dart';
 import 'package:todo_backend/providers/auth_provider.dart';
@@ -44,6 +44,8 @@ class _TodoHomeState extends ConsumerState<TodoHome> {
 
   @override
   Widget build(BuildContext context) {
+    final entriesValue = ref.watch(ToDoEntriesProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -51,7 +53,7 @@ class _TodoHomeState extends ConsumerState<TodoHome> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         actions: [
-          const Icon(Icons.person_rounded, size: 30,),
+          const Icon(Icons.person_rounded, size: 30),
           const SizedBox(width: 4),
           Text(
             _userName,
@@ -59,7 +61,7 @@ class _TodoHomeState extends ConsumerState<TodoHome> {
           ),
           const SizedBox(width: 20),
           IconButton(
-            icon: const Icon(Icons.logout,color: Colors.redAccent),
+            icon: const Icon(Icons.logout, color: Colors.redAccent),
             tooltip: 'Logout',
             onPressed: () async {
               try {
@@ -74,13 +76,70 @@ class _TodoHomeState extends ConsumerState<TodoHome> {
               }
             },
           ),
-          const SizedBox(width: 20)
+          const SizedBox(width: 20),
         ],
       ),
-      body: ListView.builder(
-        itemCount: todo_list.length,
-        itemBuilder: (context, index) {
-          return TodoEntryCard(entrys: todo_list[index]);
+      // body: ListView.builder(
+      //   itemCount: todo_list.length,
+      //   itemBuilder: (context, index) {
+      //     return TodoEntryCard(entrys: todo_list[index]);
+      //   },
+      // ),
+      body: entriesValue.when(
+        loading: () => const CircularProgressIndicator(),
+        error: (error, stackTrace) {
+          if (error is FirebaseException) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Error loading entries',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ), // Text
+                  const SizedBox(height: 8),
+                  Text(
+                    error.toString(),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ), // Text
+                ],
+              ),
+            );
+          } else {
+            return Center(child: Text('An unexpected error occurred: $error'));
+          }
+        },
+        data: (entries) {
+          if (entries.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.inbox, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No entries found',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap the + button to add a new entry.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: entries.length,
+            itemBuilder: (context, index) {
+              return TodoEntryCard(entrys: entries[index]);
+            },
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -94,10 +153,22 @@ class _TodoHomeState extends ConsumerState<TodoHome> {
             ),
             builder: (context) {
               return AddEntryBottom(
-                onSave: (entry) {
-                  setState(() {
-                    todo_list.add(entry);
-                  });
+                onSave: (entry) async {
+                  // setState(() {
+                  //   todo_list.add(entry);
+                  // });
+                  try {
+                    final service = ref.read(ToDoEntryServiceProvider);
+                    await service.addEntry(entry);
+                    Navigator.pop(context);
+                  } catch (err) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to add entry: $err'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
               );
             },
@@ -108,33 +179,3 @@ class _TodoHomeState extends ConsumerState<TodoHome> {
     );
   }
 }
-
-
-
-
-
-
-
-      // body: SingleChildScrollView(
-        // child: Column(
-        //   children: [
-        //     for(int i=0; i<30; i++)
-        //       Card(
-        //         color: Colors.amber[300],
-        //         elevation: 2.0,
-        //         margin: EdgeInsets.all(10.0),
-        //         child: Padding(
-        //           padding: EdgeInsets.all(16.0),
-        //           child: Text('Basic Card Content'),
-        //         ),
-        //       )
-        //   ],
-        // )
-      // ),
-      // body: ListView(
-      //   children: [
-      //     const JournalEntryCard(),
-      //     const JournalEntryCard(),
-      //     const JournalEntryCard(),
-      //   ],
-      // ),
