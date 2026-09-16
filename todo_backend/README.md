@@ -46,4 +46,9 @@ https://github.com/user-attachments/assets/30539dcb-b601-44ec-90f1-f987db21c6f1
 ## The app should remain stable and error-free
 ```
 
+# Screenshots
+
+https://github.com/user-attachments/assets/184614f5-fa3a-4fc0-b8d4-527b5e78a5f5
+
+
 
