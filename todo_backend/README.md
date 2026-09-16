@@ -1,5 +1,7 @@
 # todo_backend
 
+```task 1```
+
 ## Integrate Firebase into the project.
 
 ## Implement user authentication:
@@ -17,4 +19,24 @@ Store TODO data in Firebase (Firestore or Realtime Database).
 Ensure user data is isolated per account.
 
 The app should handle login/logout properly.
+```
+
+```task 2```
+
+## Use the existing TODO app
+
+## Add a reminder feature for TODO tasks
+
+## Integrate push notifications:
+- Local notifications or
+- Firebase Cloud Messaging (FCM)
+
+## Allow users to:
+- Set date & time for reminders
+- Receive notifications at the scheduled time
+
+```
+## Ensure notifications work even when the app is in background
+## Handle permission requests properly
+## The app should remain stable and error-free
 ```

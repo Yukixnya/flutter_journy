@@ -3,11 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_backend/models/user_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthService {
   final Ref ref;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> saveUserToken(String userId) async {
+    final token = await FirebaseMessaging.instance.getToken();
+    await _firestore.collection('users').doc(userId).set({'fcmToken':token}, SetOptions(merge: true));
+  }
 
   AuthService(this.ref);
 
@@ -18,6 +24,9 @@ class AuthService {
         email: email,
         password: password,
       );
+      if (userData.user != null) {
+        await saveUserToken(userData.user!.uid);
+      }
       await _saveUserState(true);
       return userData;
     } on FirebaseAuthException catch (e) {
@@ -52,8 +61,11 @@ class AuthService {
       
       await userData.user?.updateDisplayName(username);
       await _addUserToFirestore(userData.user?.uid ?? '', username, email);
+      if (userData.user != null) {
+        await saveUserToken(userData.user!.uid);
+      }
       await _saveUserState(true);
-      
+
       return userData;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

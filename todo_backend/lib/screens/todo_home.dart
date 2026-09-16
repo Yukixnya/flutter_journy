@@ -5,6 +5,7 @@ import 'package:todo_backend/providers/entry_service_provider.dart';
 import 'package:todo_backend/widgets/todo_entry_card.dart';
 import 'package:todo_backend/widgets/add_entry_bottom.dart';
 import 'package:todo_backend/providers/auth_provider.dart';
+import 'package:todo_backend/screens/send_notification.dart';
 
 class TodoHome extends ConsumerStatefulWidget {
   const TodoHome({super.key});
@@ -60,6 +61,18 @@ class _TodoHomeState extends ConsumerState<TodoHome> {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 20),
+          IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.blueAccent),
+            tooltip: 'Send Notification',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SendNotificationScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.redAccent),
             tooltip: 'Logout',

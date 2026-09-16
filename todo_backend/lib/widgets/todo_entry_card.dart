@@ -27,6 +27,17 @@ class TodoEntryCard extends ConsumerWidget {
                   Text(entrys.content, style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 8.0),
                   Text("${entrys.date.day}/${entrys.date.month}/${entrys.date.year}", style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                  if (entrys.reminderDateTime != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.alarm, size: 16, color: Colors.blue),
+                          SizedBox(width: 4),
+                          Text("${entrys.reminderDateTime!.month}/${entrys.reminderDateTime!.day} at ${entrys.reminderDateTime!.hour}:${entrys.reminderDateTime!.minute.toString().padLeft(2, '0')}", style: TextStyle(color: Colors.blue, fontSize: 12)),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
