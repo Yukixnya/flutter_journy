@@ -21,6 +21,11 @@ Ensure user data is isolated per account.
 The app should handle login/logout properly.
 ```
 
+# Screenshots
+
+https://github.com/user-attachments/assets/30539dcb-b601-44ec-90f1-f987db21c6f1
+
+
 ```task 2```
 
 ## Use the existing TODO app
@@ -40,3 +45,5 @@ The app should handle login/logout properly.
 ## Handle permission requests properly
 ## The app should remain stable and error-free
 ```
+
+
